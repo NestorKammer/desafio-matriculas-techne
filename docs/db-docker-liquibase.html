@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SQL Server Docker + Liquibase ? Matrículas</title>
+  <style>
+    :root { --bg:#0f1419; --s:#1a2332; --t:#e8eef6; --m:#94a3b8; --a:#3d9cf0; --b:#334155; }
+    body { margin:0; font-family:Segoe UI,system-ui,sans-serif; background:var(--bg); color:var(--t); line-height:1.55; }
+    main { max-width:900px; margin:0 auto; padding:1.5rem; }
+    h1 { font-size:1.6rem; }
+    h2 { font-size:1.15rem; border-left:3px solid var(--a); padding-left:.6rem; }
+    section { background:var(--s); border:1px solid var(--b); border-radius:10px; padding:1rem 1.2rem; margin:1rem 0; }
+    code, pre { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86rem; }
+    pre { background:#0b1220; border:1px solid var(--b); border-radius:8px; padding:.85rem 1rem; overflow:auto; color:#cfe7ff; }
+    p, li { color:#c9d5e4; }
+    .ok { color:#2dd4a8; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Configuração: SQL Server (Docker) + Liquibase</h1>
+  <p class="ok">Validado: container healthy, database <code>matriculas_db</code> criado, 5 changeSets Liquibase aplicados.</p>
+
+  <section>
+    <h2>Stack completa (Compose)</h2>
+<pre>./bin/stack-up.sh
+# sobe SQL Server + backend Spring Boot + frontend Angular/nginx</pre>
+    <ul>
+      <li>Frontend: <code>http://localhost:4200</code> (proxy <code>/api</code> ? backend)</li>
+      <li>Backend: <code>http://localhost:8080</code></li>
+      <li>Swagger: <code>http://localhost:8080/swagger-ui/index.html</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Subir so o banco</h2>
+<pre>cp .env.example .env   # se ainda nao existir
+./bin/db-up.sh         # sobe SQL Server + cria matriculas_db</pre>
+    <ul>
+      <li>Host/porta: <code>localhost:1433</code></li>
+      <li>Database: <code>matriculas_db</code></li>
+      <li>Usuario: <code>sa</code> / senha em <code>.env</code> (padrao <code>Matriculas@2026</code>)</li>
+      <li>Container: <code>matriculas-sqlserver</code></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Spring Boot (profile docker)</h2>
+<pre>cd backend
+export JAVA_HOME=../.tools/jdk-21   # se usar o JDK local do projeto
+mvn spring-boot:run -Dspring-boot.run.profiles=docker</pre>
+    <p>O Liquibase roda no startup a partir de <code>db/changelog/db.changelog-master.xml</code>.</p>
+  </section>
+
+  <section>
+    <h2>Arquivos principais</h2>
+    <ul>
+      <li><code>docker-compose.yml</code> ? SQL Server 2022 + job de init do database</li>
+      <li><code>docker/sqlserver/init/01-create-database.sql</code> ? cria <code>matriculas_db</code></li>
+      <li><code>backend/src/main/resources/application-docker.yml</code> ? JDBC MSSQL</li>
+      <li><code>backend/src/main/resources/db/changelog/changes/001-create-schema.xml</code> ? tabelas do dominio</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Schema criado pelo Liquibase</h2>
+    <p><code>aluno</code>, <code>curso</code>, <code>disciplina</code>, <code>turma</code>, <code>matricula</code> (+ constraints de status, vagas e unique aluno+turma).</p>
+  </section>
+</main>
+</body>
+</html>

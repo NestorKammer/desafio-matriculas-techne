@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="001-aluno" author="desafio-matriculas">
+    <createTable tableName="aluno">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_aluno"/>
+      </column>
+      <column name="nome" type="nvarchar(150)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="email" type="nvarchar(180)">
+        <constraints nullable="false" unique="true" uniqueConstraintName="uk_aluno_email"/>
+      </column>
+      <column name="ra" type="nvarchar(30)">
+        <constraints nullable="false" unique="true" uniqueConstraintName="uk_aluno_ra"/>
+      </column>
+      <column name="ativo" type="bit" defaultValueBoolean="true">
+        <constraints nullable="false"/>
+      </column>
+      <column name="criado_em" type="datetime2" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="atualizado_em" type="datetime2"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="001-curso" author="desafio-matriculas">
+    <createTable tableName="curso">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_curso"/>
+      </column>
+      <column name="codigo" type="nvarchar(30)">
+        <constraints nullable="false" unique="true" uniqueConstraintName="uk_curso_codigo"/>
+      </column>
+      <column name="nome" type="nvarchar(150)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="carga_horaria" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ativo" type="bit" defaultValueBoolean="true">
+        <constraints nullable="false"/>
+      </column>
+      <column name="criado_em" type="datetime2" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="atualizado_em" type="datetime2"/>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="001-disciplina" author="desafio-matriculas">
+    <createTable tableName="disciplina">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_disciplina"/>
+      </column>
+      <column name="curso_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="codigo" type="nvarchar(30)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="nome" type="nvarchar(150)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="carga_horaria" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="criado_em" type="datetime2" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="atualizado_em" type="datetime2"/>
+    </createTable>
+    <addForeignKeyConstraint
+      baseTableName="disciplina"
+      baseColumnNames="curso_id"
+      referencedTableName="curso"
+      referencedColumnNames="id"
+      constraintName="fk_disciplina_curso"
+      onDelete="NO ACTION"/>
+    <addUniqueConstraint
+      tableName="disciplina"
+      columnNames="curso_id, codigo"
+      constraintName="uk_disciplina_curso_codigo"/>
+  </changeSet>
+
+  <changeSet id="001-turma" author="desafio-matriculas">
+    <createTable tableName="turma">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_turma"/>
+      </column>
+      <column name="disciplina_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="codigo" type="nvarchar(30)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="periodo" type="nvarchar(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="vagas_totais" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="vagas_ocupadas" type="int" defaultValueNumeric="0">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="nvarchar(20)" defaultValue="ABERTA">
+        <constraints nullable="false"/>
+      </column>
+      <column name="version" type="bigint" defaultValueNumeric="0">
+        <constraints nullable="false"/>
+      </column>
+      <column name="criado_em" type="datetime2" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="atualizado_em" type="datetime2"/>
+    </createTable>
+    <addForeignKeyConstraint
+      baseTableName="turma"
+      baseColumnNames="disciplina_id"
+      referencedTableName="disciplina"
+      referencedColumnNames="id"
+      constraintName="fk_turma_disciplina"
+      onDelete="NO ACTION"/>
+    <addUniqueConstraint
+      tableName="turma"
+      columnNames="disciplina_id, codigo, periodo"
+      constraintName="uk_turma_disciplina_codigo_periodo"/>
+    <sql>
+      ALTER TABLE turma ADD CONSTRAINT ck_turma_status
+        CHECK (status IN ('ABERTA', 'FECHADA'));
+      ALTER TABLE turma ADD CONSTRAINT ck_turma_vagas
+        CHECK (vagas_totais &gt;= 0 AND vagas_ocupadas &gt;= 0 AND vagas_ocupadas &lt;= vagas_totais);
+    </sql>
+  </changeSet>
+
+  <changeSet id="001-matricula" author="desafio-matriculas">
+    <createTable tableName="matricula">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" primaryKeyName="pk_matricula"/>
+      </column>
+      <column name="aluno_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="turma_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="status" type="nvarchar(20)" defaultValue="PENDENTE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="criado_em" type="datetime2" defaultValueComputed="CURRENT_TIMESTAMP">
+        <constraints nullable="false"/>
+      </column>
+      <column name="confirmado_em" type="datetime2"/>
+      <column name="cancelado_em" type="datetime2"/>
+      <column name="atualizado_em" type="datetime2"/>
+    </createTable>
+    <addForeignKeyConstraint
+      baseTableName="matricula"
+      baseColumnNames="aluno_id"
+      referencedTableName="aluno"
+      referencedColumnNames="id"
+      constraintName="fk_matricula_aluno"
+      onDelete="NO ACTION"/>
+    <addForeignKeyConstraint
+      baseTableName="matricula"
+      baseColumnNames="turma_id"
+      referencedTableName="turma"
+      referencedColumnNames="id"
+      constraintName="fk_matricula_turma"
+      onDelete="NO ACTION"/>
+    <addUniqueConstraint
+      tableName="matricula"
+      columnNames="aluno_id, turma_id"
+      constraintName="uk_matricula_aluno_turma"/>
+    <createIndex tableName="matricula" indexName="ix_matricula_aluno">
+      <column name="aluno_id"/>
+    </createIndex>
+    <createIndex tableName="matricula" indexName="ix_matricula_turma">
+      <column name="turma_id"/>
+    </createIndex>
+    <sql>
+      ALTER TABLE matricula ADD CONSTRAINT ck_matricula_status
+        CHECK (status IN ('PENDENTE', 'CONFIRMADA', 'CANCELADA'));
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>

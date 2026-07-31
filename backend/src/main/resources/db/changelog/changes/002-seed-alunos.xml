@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="002-seed-alunos" author="desafio-matriculas" context="seed">
+    <comment>Cadastro previo de 50 alunos para demonstracao</comment>
+    <loadData
+      tableName="aluno"
+      file="db/changelog/data/alunos-seed.csv"
+      separator=","
+      encoding="UTF-8">
+      <column name="nome" type="STRING"/>
+      <column name="email" type="STRING"/>
+      <column name="ra" type="STRING"/>
+      <column name="ativo" type="BOOLEAN"/>
+    </loadData>
+  </changeSet>
+
+</databaseChangeLog>

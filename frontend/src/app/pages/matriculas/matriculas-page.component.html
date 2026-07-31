@@ -1,0 +1,100 @@
+<section class="panel">
+  <header>
+    <h2>Matriculas</h2>
+    <p>Fluxo PENDENTE ? CONFIRMADA / CANCELADA, com controle de vagas.</p>
+  </header>
+
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="matricular()">
+    <label>
+      Aluno
+      <select formControlName="alunoId">
+        <option [ngValue]="0" disabled>Selecione</option>
+        <option *ngFor="let a of alunos" [ngValue]="a.id">{{ a.ra }} - {{ a.nome }}</option>
+      </select>
+    </label>
+    <label>
+      Turma
+      <select formControlName="turmaId">
+        <option [ngValue]="0" disabled>Selecione</option>
+        <option *ngFor="let t of turmas" [ngValue]="t.id">
+          {{ t.codigo }} ({{ t.periodo }}) ? {{ t.status }} ? vagas {{ t.vagasDisponiveis }}
+        </option>
+      </select>
+    </label>
+    <div class="actions">
+      <button type="submit">Matricular (PENDENTE)</button>
+    </div>
+  </form>
+
+  <form class="form-grid filtro" [formGroup]="filtro" (ngSubmit)="consultar()">
+    <label>
+      Filtrar por aluno
+      <select formControlName="alunoId">
+        <option [ngValue]="0">?</option>
+        <option *ngFor="let a of alunos" [ngValue]="a.id">{{ a.ra }} - {{ a.nome }}</option>
+      </select>
+    </label>
+    <label>
+      Filtrar por turma
+      <select formControlName="turmaId">
+        <option [ngValue]="0">?</option>
+        <option *ngFor="let t of turmas" [ngValue]="t.id">{{ t.codigo }} - {{ t.periodo }}</option>
+      </select>
+    </label>
+    <div class="actions">
+      <button type="submit" class="ghost">Consultar</button>
+    </div>
+  </form>
+
+  <div class="table-wrap" *ngIf="matriculas.length; else vazio">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Aluno</th>
+          <th>Turma</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of matriculas">
+          <td>{{ m.id }}</td>
+          <td>{{ m.alunoRa }} ? {{ m.alunoNome }}</td>
+          <td>{{ m.turmaCodigo }} ({{ m.turmaPeriodo }})</td>
+          <td>
+            <span
+              class="badge"
+              [class.open]="m.status === 'CONFIRMADA'"
+              [class.warn]="m.status === 'PENDENTE'"
+              [class.closed]="m.status === 'CANCELADA'"
+            >
+              {{ m.status }}
+            </span>
+          </td>
+          <td class="row-actions">
+            <button
+              type="button"
+              class="link"
+              (click)="confirmar(m)"
+              *ngIf="m.status === 'PENDENTE'"
+            >
+              Confirmar
+            </button>
+            <button
+              type="button"
+              class="link danger"
+              (click)="cancelar(m)"
+              *ngIf="m.status !== 'CANCELADA'"
+            >
+              Cancelar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #vazio>
+    <p class="empty">Nenhuma matricula para o filtro informado.</p>
+  </ng-template>
+</section>

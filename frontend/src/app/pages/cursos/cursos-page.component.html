@@ -1,0 +1,54 @@
+<section class="panel">
+  <header>
+    <h2>Cursos</h2>
+    <p>Cadastro de cursos academicos.</p>
+  </header>
+
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
+    <label>
+      Codigo
+      <input formControlName="codigo" placeholder="ENG" />
+    </label>
+    <label>
+      Nome
+      <input formControlName="nome" placeholder="Engenharia" />
+    </label>
+    <label>
+      Carga horaria
+      <input formControlName="cargaHoraria" type="number" min="1" />
+    </label>
+    <div class="actions">
+      <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+      <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="table-wrap" *ngIf="cursos.length; else vazio">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Codigo</th>
+          <th>Nome</th>
+          <th>Carga</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of cursos">
+          <td>{{ c.id }}</td>
+          <td>{{ c.codigo }}</td>
+          <td>{{ c.nome }}</td>
+          <td>{{ c.cargaHoraria }}</td>
+          <td class="row-actions">
+            <button type="button" class="link" (click)="editar(c)">Editar</button>
+            <button type="button" class="link danger" (click)="excluir(c)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #vazio>
+    <p class="empty">Nenhum curso cadastrado.</p>
+  </ng-template>
+</section>

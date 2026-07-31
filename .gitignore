@@ -1,0 +1,33 @@
+# Git / IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.cursor/
+*:Zone.Identifier
+*Zone.Identifier*
+
+# Env / secrets
+.env
+!.env.example
+
+# Local JDK / tools
+.tools/
+
+# Maven leftover / wrapper
+.mvn/
+mvnw
+mvnw.cmd
+
+# Backend
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Logs
+*.log
+logs-*.txt

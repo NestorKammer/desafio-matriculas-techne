@@ -1,0 +1,18 @@
+# Profile padro para desenvolvimento com SQL Server via Docker Compose
+spring:
+  datasource:
+    url: jdbc:sqlserver://${MSSQL_HOST:localhost}:${MSSQL_PORT:1433};databaseName=${MSSQL_DB:matriculas_db};encrypt=false;trustServerCertificate=true
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:Matriculas@2026}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect
+  liquibase:
+    enabled: true
+    contexts: seed
+
+logging:
+  level:
+    br.com.techne.matriculas: DEBUG

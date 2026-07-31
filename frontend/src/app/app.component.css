@@ -1,0 +1,110 @@
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #13212b;
+  color: #e8eef2;
+  padding: 1.25rem 1rem;
+  border-right: 1px solid #1f3340;
+}
+
+.brand {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.brand-mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: #1f7a6c;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.brand strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.brand small {
+  color: #9db0bd;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+nav a {
+  color: #c9d6df;
+  text-decoration: none;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.45rem;
+}
+
+nav a:hover,
+nav a.active {
+  background: #1c313f;
+  color: #fff;
+}
+
+.content {
+  padding: 1.25rem 1.5rem 2rem;
+  position: relative;
+}
+
+.toast {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+}
+
+.toast.ok {
+  background: #e7f6f1;
+  border-color: #9fd6c5;
+  color: #0f5a49;
+}
+
+.toast.erro {
+  background: #fdeceb;
+  border-color: #f2b4ae;
+  color: #8a2b22;
+}
+
+.toast button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: inherit;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid #1f3340;
+  }
+
+  nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plano de Implementa��o ? Gest�o de Matr�culas Acad�micas</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface-2: #243044;
+      --text: #e8eef6;
+      --muted: #94a3b8;
+      --accent: #3d9cf0;
+      --accent-2: #2dd4a8;
+      --warn: #f5a524;
+      --danger: #ef6b6b;
+      --border: #334155;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .hero {
+      position: relative;
+      min-height: 42vh;
+      display: flex;
+      align-items: flex-end;
+      background:
+        linear-gradient(180deg, rgba(15,20,25,.35) 0%, rgba(15,20,25,.92) 100%),
+        url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-inner { padding: 2.5rem 1.5rem 2rem; max-width: 980px; margin: 0 auto; width: 100%; }
+    .hero h1 { margin: 0 0 .4rem; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -.02em; }
+    .hero p { margin: 0; color: #c5d3e3; max-width: 46rem; }
+    .badge {
+      display: inline-block;
+      background: rgba(61,156,240,.18);
+      color: var(--accent);
+      border: 1px solid rgba(61,156,240,.35);
+      padding: .25rem .65rem;
+      border-radius: 999px;
+      font-size: .78rem;
+      margin-bottom: .75rem;
+      font-weight: 600;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 1.5rem; }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.35rem;
+      margin-bottom: 1.1rem;
+    }
+    h2 {
+      margin: 0 0 .85rem;
+      font-size: 1.2rem;
+      border-left: 3px solid var(--accent);
+      padding-left: .65rem;
+    }
+    h3 { margin: 1rem 0 .5rem; font-size: 1rem; color: #d7e4f5; }
+    p, li { color: #c9d5e4; }
+    a { color: var(--accent); }
+    ul, ol { padding-left: 1.2rem; }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .9rem 1rem;
+    }
+    .card strong { display: block; color: var(--text); margin-bottom: .25rem; }
+    .card small { color: #94a3b8; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .92rem;
+      margin: .5rem 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: .55rem .65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--surface-2); color: #e2e8f0; }
+    code, .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .86em;
+      background: #0b1220;
+      padding: .1rem .35rem;
+      border-radius: 4px;
+      color: #9fd4ff;
+    }
+    pre {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .9rem 1rem;
+      overflow-x: auto;
+      color: #cfe7ff;
+      font-size: .84rem;
+    }
+    .callout {
+      border-left: 3px solid var(--accent-2);
+      background: rgba(45,212,168,.08);
+      padding: .75rem 1rem;
+      border-radius: 0 8px 8px 0;
+      margin: .75rem 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn);
+      background: rgba(245,165,36,.08);
+    }
+    .callout.danger {
+      border-left-color: var(--danger);
+      background: rgba(239,107,107,.08);
+    }
+    .phase { display: flex; gap: .75rem; align-items: flex-start; margin: .7rem 0; }
+    .phase-num {
+      flex: 0 0 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #062033;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+    .img-row {
+      display: grid;
+      gap: .75rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      margin: .8rem 0;
+    }
+    .img-row figure {
+      margin: 0;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .img-row img { width: 100%; height: 140px; object-fit: cover; display: block; }
+    .img-row figcaption { padding: .55rem .7rem; font-size: .8rem; color: #94a3b8; }
+    .checklist li { margin: .35rem 0; }
+    .muted { color: #94a3b8; font-size: .9rem; }
+    footer {
+      max-width: 980px;
+      margin: 0 auto 2rem;
+      padding: 0 1.5rem;
+      color: #94a3b8;
+      font-size: .85rem;
+    }
+    .toc a { text-decoration: none; }
+    .toc li { margin: .25rem 0; }
+    @media print {
+      body { background: #fff; color: #111; }
+      section, .card, .hero { background: #fff; color: #111; border-color: #ccc; }
+      p, li, .hero p { color: #222; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="badge">Desafio T�cnico Pleno � Tribe Lyceum / Techne</div>
+      <h1>Plano de Implementa��o ? Gest�o de Matr�culas Acad�micas</h1>
+      <p>
+        Plano execut�vel baseado no <em>DESAFI_2.pdf</em>, com stack Spring Boot + Angular,
+        persist�ncia em SQL Server local (<code>192.168.1.4</code>) e entrega alinhada aos crit�rios de avalia��o Pleno.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <section class="toc">
+      <h2>Sum�rio</h2>
+      <ol>
+        <li><a href="#escopo">Escopo e premissas</a></li>
+        <li><a href="#stack">Stack e infraestrutura</a></li>
+        <li><a href="#modelo">Modelo de dados e regras</a></li>
+        <li><a href="#arquitetura">Arquitetura e camadas</a></li>
+        <li><a href="#api">API REST e frontend</a></li>
+        <li><a href="#vagas">Prote��o da regra de vagas</a></li>
+        <li><a href="#testes">Estrat�gia de testes</a></li>
+        <li><a href="#fases">Fases de entrega (ordem sugerida)</a></li>
+        <li><a href="#readme">README, Swagger e Differenciais</a></li>
+        <li><a href="#decisoes">Decis�es abertas / premissas t�cnicas</a></li>
+      </ol>
+    </section>
+
+    <section id="escopo">
+      <h2>1. Escopo e premissas</h2>
+      <div class="img-row">
+        <figure>
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" alt="Estudante em ambiente acad�mico" />
+          <figcaption>Dom�nio: matr�cula acad�mica com alunos, cursos, disciplinas e turmas.</figcaption>
+        </figure>
+        <figure>
+          <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="C�digo em monitor" />
+          <figcaption>Entrega: API REST test�vel + frontend + README reproduz�vel.</figcaption>
+        </figure>
+      </div>
+      <p>
+        Aplica��o <strong>greenfield</strong> (n�o � extens�o do ERP Lyceum NG / Cronos).
+        Objetivo: gest�o de matr�culas com CRUD das entidades b�sicas e fluxo completo de matr�cula
+        (PENDENTE ? CONFIRMADA / CANCELADA), com foco em clareza de camadas, testes e execu��o local.
+      </p>
+      <div class="callout">
+        <strong>Premissa do ambiente:</strong> banco principal = SQL Server em
+        <code>192.168.1.4</code>. Docker Compose continua no escopo (exig�ncia do desafio) como op��o
+        reproduz�vel para avaliadores ? profiles Spring: <code>local-mssql</code> e <code>docker</code>.
+      </div>
+      <h3>Fora de escopo (evitar over-engineering)</h3>
+      <ul>
+        <li>Microsservi�os, mensageria externa, autentica��o complexa (JWT/OAuth opcional).</li>
+        <li>Multi-tenancy, filiais, workflow acad�mico completo do Lyceum.</li>
+        <li>Complexidade sem justificativa ? crit�rio expl�cito do PDF.</li>
+      </ul>
+    </section>
+
+    <section id="stack">
+      <h2>2. Stack e infraestrutura</h2>
+      <div class="grid">
+        <div class="card">
+          <strong>Backend</strong>
+          Java 21 � Spring Boot 3.x � Spring Web � Spring Data JPA � Validation � springdoc-openapi
+        </div>
+        <div class="card">
+          <strong>Persist�ncia</strong>
+          SQL Server (JDBC Microsoft) � Liquibase � <code>ddl-auto=validate (schema via Liquibase)</code>
+        </div>
+        <div class="card">
+          <strong>Frontend</strong>
+          Angular (standalone) � HttpClient � rotas por entidade � tratamento de erros global
+        </div>
+        <div class="card">
+          <strong>Qualidade</strong>
+          JUnit 5 � Mockito � MockMvc / @SpringBootTest � Testcontainers (opcional) � Maven
+        </div>
+      </div>
+
+      <h3>SQL Server local (obrigat�rio neste plano)</h3>
+<pre>jdbc:sqlserver://192.168.1.4:1433;
+  databaseName=matriculas_db;
+  encrypt=false;
+  trustServerCertificate=true</pre>
+      <ul>
+        <li>Criar database <code>matriculas_db</code> (ou nome acordado) no host <code>192.168.1.4</code>.</li>
+        <li>Credenciais via vari�veis de ambiente / <code>application-local-mssql.yml</code> (n�o versionar senha).</li>
+        <li>Dialect: <code>SQLServerDialect</code> � driver <code>mssql-jdbc</code> � Liquibase schema <code>dbo</code>.</li>
+        <li>Refer�ncia de boas pr�ticas: Liquibase dono do schema + Hibernate em <code>validate</code>
+          (<a href="https://rieckpil.de/howto-best-practices-for-liquibase-and-hibernate-with-spring-boot/" target="_blank" rel="noopener">Rieckpil</a>).</li>
+      </ul>
+
+      <h3>Docker Compose (atende crit�rio do desafio)</h3>
+      <p>
+        Servi�o <code>sqlserver</code> (imagem oficial Microsoft) + volume + healthcheck.
+        Profile <code>docker</code> aponta para <code>localhost:1433</code> do container.
+        README deve documentar: (A) SQL Server local 192.168.1.4 e (B) Compose para avaliadores.
+      </p>
+
+      <h3>Estrutura de reposit�rio sugerida</h3>
+<pre>desafio/
+??? backend/                 # Spring Boot (Maven)
+?   ??? src/main/resources/db/migration/
+??? frontend/                # Angular
+??? docker-compose.yml
+??? docs/
+?   ??? plano-implementacao.html
+??? README.md</pre>
+    </section>
+
+    <section id="modelo">
+      <h2>3. Modelo de dados e regras de neg�cio</h2>
+      <table>
+        <thead>
+          <tr><th>Entidade</th><th>Campos m�nimos</th><th>Observa��es</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Aluno</strong></td>
+            <td>id, nome, email (unique), CPF/RA, ativo, created_at</td>
+            <td>CRUD completo</td>
+          </tr>
+          <tr>
+            <td><strong>Curso</strong></td>
+            <td>id, codigo (unique), nome, carga_horaria, ativo</td>
+            <td>CRUD completo</td>
+          </tr>
+          <tr>
+            <td><strong>Disciplina</strong></td>
+            <td>id, curso_id (FK), codigo, nome, carga_horaria</td>
+            <td>Pertence a um curso</td>
+          </tr>
+          <tr>
+            <td><strong>Turma</strong></td>
+            <td>id, disciplina_id, codigo, periodo, vagas_totais, vagas_ocupadas, status (ABERTA/FECHADA), version</td>
+            <td>Contador de vagas + lock</td>
+          </tr>
+          <tr>
+            <td><strong>Matr�cula</strong></td>
+            <td>id, aluno_id, turma_id, status (PENDENTE|CONFIRMADA|CANCELADA), datas</td>
+            <td>Unique (aluno_id, turma_id)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Regras m�nimas (do PDF) ? contratos de servi�o</h3>
+      <ol class="checklist">
+        <li>Matricular somente em turma <code>ABERTA</code>.</li>
+        <li>Respeitar limite: <code>vagas_ocupadas &lt; vagas_totais</code>.</li>
+        <li>Proibir duplicidade aluno+turma (unique + valida��o de dom�nio).</li>
+        <li>Status: PENDENTE, CONFIRMADA, CANCELADA.</li>
+        <li>Confirmar: consome 1 vaga (somente a partir de PENDENTE).</li>
+        <li>Cancelar CONFIRMADA: libera 1 vaga; cancelar PENDENTE: s� muda status.</li>
+        <li>Consultas: matr�culas por aluno e por turma.</li>
+      </ol>
+
+      <div class="callout warn">
+        <strong>Decis�o de modelagem:</strong> cria��o da matr�cula inicia em <code>PENDENTE</code>
+        (n�o consome vaga). Consumo ocorre s� em <code>confirmar</code>. Isso deixa o fluxo de status
+        e os testes alinhados ao enunciado e facilita explicar na entrevista.
+      </div>
+    </section>
+
+    <section id="arquitetura">
+      <h2>4. Arquitetura e camadas</h2>
+      <figure style="margin:0 0 1rem;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80" alt="Planejamento e organiza��o" style="width:100%;height:160px;object-fit:cover;display:block;" />
+      </figure>
+      <p>Arquitetura em camadas (KISS), sem microservi�os ? exatamente o perfil esperado no n�vel Pleno:</p>
+<pre>controller  ? recebe HTTP, valida Bean Validation, mapeia DTO
+service     ? orquestra regras, @Transactional
+domain      ? entidades, enums, exce��es de neg�cio
+repository  ? Spring Data JPA
+dto         ? request/response (nunca expor entidade)
+exception   ? @RestControllerAdvice + Problem Details / payload padronizado</pre>
+
+      <h3>Pacotes sugeridos</h3>
+<pre>br.com.techne.matriculas
+  ??? aluno | curso | disciplina | turma | matricula
+  ?     ??? *Controller
+  ?     ??? *Service
+  ?     ??? *Repository
+  ?     ??? *Entity
+  ?     ??? dto/
+  ??? shared
+  ?     ??? exception/
+  ?     ??? config/          # CORS, OpenAPI
+  ??? MatriculasApplication</pre>
+      <p class="muted">
+        Organiza��o por feature reduz acoplamento e facilita a defesa oral
+        (?onde est� o fluxo de matr�cula?? ? pacote <code>matricula</code>).
+      </p>
+    </section>
+
+    <section id="api">
+      <h2>5. API REST e frontend</h2>
+      <h3>Endpoints (rascunho)</h3>
+      <table>
+        <thead>
+          <tr><th>Recurso</th><th>M�todos</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/api/alunos</code></td><td>GET (lista/filtros), GET/{id}, POST, PUT/{id}, DELETE/{id}</td></tr>
+          <tr><td><code>/api/cursos</code></td><td>CRUD</td></tr>
+          <tr><td><code>/api/disciplinas</code></td><td>CRUD (+ filtro por curso)</td></tr>
+          <tr><td><code>/api/turmas</code></td><td>CRUD (+ abrir/fechar opcional)</td></tr>
+          <tr>
+            <td><code>/api/matriculas</code></td>
+            <td>
+              POST criar (PENDENTE)<br />
+              POST /{id}/confirmar<br />
+              POST /{id}/cancelar<br />
+              GET ?alunoId= � GET ?turmaId=
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Frontend Angular</h3>
+      <ul>
+        <li>Telas: listas + formul�rios por entidade; tela de matr�cula com a��es confirmar/cancelar.</li>
+        <li>Services HTTP por dom�nio; interceptor ou handler para erros da API (mensagem amig�vel).</li>
+        <li>CORS no backend para <code>http://localhost:4200</code> e/ou proxy Angular em dev.</li>
+        <li>Estados vazios e feedback de limite de vagas / turma fechada / duplicidade.</li>
+      </ul>
+    </section>
+
+    <section id="vagas">
+      <h2>6. Prote��o da regra de vagas (ponto cr�tico da avalia��o)</h2>
+      <div class="callout danger">
+        Crit�rio eliminat�rio: ?regra de vagas pode ser quebrada facilmente?.
+        A prote��o deve ser <strong>transacional + concorrente</strong>, n�o s� <code>if</code> em mem�ria.
+      </div>
+      <h3>Estrat�gia recomendada (h�brida, simples de explicar)</h3>
+      <ol>
+        <li><code>@Transactional</code> no servi�o de confirmar/cancelar.</li>
+        <li>Carregar turma com <code>LockModeType.PESSIMISTIC_WRITE</code> (SELECT ? UPDLOCK/ROWLOCK no SQL Server).</li>
+        <li>Validar status ABERTA e <code>vagas_ocupadas &lt; vagas_totais</code>.</li>
+        <li>Incrementar/decrementar contador e persistir matr�cula na mesma transa��o.</li>
+        <li>Constraint UNIQUE (aluno_id, turma_id) como rede de seguran�a no banco.</li>
+        <li>Campo <code>@Version</code> na Turma como defesa adicional / mensagem clara em conflito.</li>
+      </ol>
+      <p class="muted">
+        Fundamenta��o: locking pessimista serializa confirma��es concorrentes na mesma turma
+        (<a href="https://vladmihalcea.com/hibernate-locking-patterns-how-do-pessimistic_read-and-pessimistic_write-work/" target="_blank" rel="noopener">(Vlad Mihalcea / JPA LockModeType)</a>.
+        Para o desafio Pleno, pessimistic write no confirmar � a resposta mais segura e f�cil de defender na entrevista.
+      </p>
+    </section>
+
+    <section id="testes">
+      <h2>7. Estrat�gia de testes</h2>
+      <div class="grid">
+        <div class="card">
+          <strong>Unit�rios (Service)</strong>
+          <small>turma fechada; sem vaga; duplicidade; confirmar consome; cancelar libera; transi��es inv�lidas</small>
+        </div>
+        <div class="card">
+          <strong>Integra��o / API</strong>
+          <small>MockMvc ou @SpringBootTest + banco de teste; fluxo criar ? confirmar ? cancelar com assert de vagas</small>
+        </div>
+        <div class="card">
+          <strong>Concorr�ncia (diferencial)</strong>
+          <small>duas threads confirmando �ltima vaga ? exatamente uma sucesso</small>
+        </div>
+      </div>
+      <p>
+        Ambiente de teste: H2 em modo MSSQL <em>ou</em> Testcontainers SQL Server.
+        Prefer�ncia pragm�tica: H2 para feedback r�pido + 1?2 testes de integra��o no profile real se houver tempo.
+      </p>
+    </section>
+
+    <section id="fases">
+      <h2>8. Fases de entrega (ordem sugerida � ~8?16h)</h2>
+
+      <div class="phase">
+        <div class="phase-num">1</div>
+        <div>
+          <strong>Bootstrap (1?2h)</strong>
+          <p>Repos Maven Spring Boot, Angular, docker-compose, profiles MSSQL, Liquibase V1 com schema, README esqueleto, OpenAPI.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">2</div>
+        <div>
+          <strong>CRUD base (2?3h)</strong>
+          <p>Aluno, Curso, Disciplina, Turma ? entidades, DTOs, valida��es, controllers, exceptions padronizadas.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">3</div>
+        <div>
+          <strong>Matr�cula + vagas (3?4h)</strong>
+          <p>Fluxo completo, lock pessimista, unique constraint, testes unit�rios das regras cr�ticas.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">4</div>
+        <div>
+          <strong>Testes de API (1?2h)</strong>
+          <p>Integra��o dos fluxos principais e cen�rios de erro (400/404/409).</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">5</div>
+        <div>
+          <strong>Frontend (3?4h)</strong>
+          <p>Telas CRUD + matr�cula; consumo da API; UX m�nima de erros.</p>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-num">6</div>
+        <div>
+          <strong>Polimento (1?2h)</strong>
+          <p>README completo (execu��o 192.168.1.4 + Compose, testes, Swagger, decis�es, uso de IA), seed opcional, CI b�sico.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="readme">
+      <h2>9. README, Swagger e diferenciais</h2>
+      <h3>README deve cobrir (checklist do PDF)</h3>
+      <ul class="checklist">
+        <li>Como rodar com SQL Server <code>192.168.1.4</code></li>
+        <li>Como subir banco via Docker Compose</li>
+        <li>Como executar testes</li>
+        <li>URL do Swagger/OpenAPI</li>
+        <li>Tecnologias e decis�es t�cnicas</li>
+        <li>Como a regra de vagas foi protegida</li>
+        <li>Como as regras cr�ticas foram testadas</li>
+        <li>Limita��es conhecidas</li>
+        <li>Uso de IA: ferramentas, partes, revis�o manual, trechos cr�ticos</li>
+      </ul>
+
+      <h3>Diferenciais (se o tempo permitir)</h3>
+      <ul>
+        <li>Pagina��o/filtros nas listagens</li>
+        <li>Logs estruturados (correlation id nas exceptions)</li>
+        <li>Evento de dom�nio interno (ex.: <code>MatriculaConfirmadaEvent</code>) sem broker</li>
+        <li>CI (GitHub Actions) rodando <code>mvn test</code> + build frontend</li>
+        <li>Teste de corrida na �ltima vaga</li>
+      </ul>
+    </section>
+
+    <section id="decisoes">
+      <h2>10. Decis�es abertas / dados necess�rios para execu��o</h2>
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Proposta do plano</th><th>Confirmar</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Host SQL Server</td>
+            <td><code>192.168.1.4:1433</code></td>
+            <td>Ping OK � TCP 1433 aberto</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td><code>matriculas_db</code></td>
+            <td>Pendente (login ainda falha)</td>
+          </tr>
+          <tr>
+            <td>Usu�rio / senha</td>
+            <td>env <code>DB_USER</code> / <code>DB_PASSWORD</code> (<code>sa</code>)</td>
+            <td>Erro 18456 ? revisar senha / Mixed Mode / sa habilitado</td>
+          </tr>
+          <tr>
+            <td>Encrypt / TLS</td>
+            <td><code>encrypt=false; trustServerCertificate=true</code> em rede local</td>
+            <td>Pol�tica da m�quina</td>
+          </tr>
+          <tr>
+            <td>Java / Angular</td>
+            <td>Java 21 + Angular atual LTS/stable</td>
+            <td>Prefer�ncia se diferente</td>
+          </tr>
+          <tr>
+            <td>Compose default</td>
+            <td>SQL Server container para avaliadores</td>
+            <td>OK?</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Pr�ximo passo sugerido:</strong> corrigir autentica��o <code>sa</code> no SQL Server
+        (<code>192.168.1.4</code>), criar o database <code>matriculas_db</code>, e iniciar a Fase 1
+        (scaffold backend + Liquibase + Compose + profile local).
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Gerado a partir de <code>DESAFI_2.pdf</code> � Fontes t�cnicas consultadas: Spring Boot + Liquibase,
+    SQL Server JDBC, JPA Pessimistic Lock � Imagens: Unsplash (uso ilustrativo).
+  </footer>
+</body>
+</html>

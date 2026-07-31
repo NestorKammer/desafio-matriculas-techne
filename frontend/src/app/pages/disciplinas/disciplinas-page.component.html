@@ -1,0 +1,63 @@
+<section class="panel">
+  <header>
+    <h2>Disciplinas</h2>
+    <p>Disciplinas vinculadas a um curso.</p>
+  </header>
+
+  <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
+    <label>
+      Curso
+      <select formControlName="cursoId">
+        <option [ngValue]="0" disabled>Selecione</option>
+        <option *ngFor="let c of cursos" [ngValue]="c.id">{{ c.codigo }} - {{ c.nome }}</option>
+      </select>
+    </label>
+    <label>
+      Codigo
+      <input formControlName="codigo" placeholder="CAL1" />
+    </label>
+    <label>
+      Nome
+      <input formControlName="nome" placeholder="Calculo I" />
+    </label>
+    <label>
+      Carga horaria
+      <input formControlName="cargaHoraria" type="number" min="1" />
+    </label>
+    <div class="actions">
+      <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+      <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="table-wrap" *ngIf="disciplinas.length; else vazio">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Curso</th>
+          <th>Codigo</th>
+          <th>Nome</th>
+          <th>Carga</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of disciplinas">
+          <td>{{ d.id }}</td>
+          <td>{{ d.cursoCodigo }}</td>
+          <td>{{ d.codigo }}</td>
+          <td>{{ d.nome }}</td>
+          <td>{{ d.cargaHoraria }}</td>
+          <td class="row-actions">
+            <button type="button" class="link" (click)="editar(d)">Editar</button>
+            <button type="button" class="link danger" (click)="excluir(d)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #vazio>
+    <p class="empty">Nenhuma disciplina cadastrada.</p>
+  </ng-template>
+</section>
