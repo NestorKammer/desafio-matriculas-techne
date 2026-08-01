@@ -9,5 +9,6 @@
   <include file="db/changelog/changes/002-seed-alunos.xml"/>
   <include file="db/changelog/changes/003-seed-cursos-disciplinas-turmas.xml"/>
   <include file="db/changelog/changes/004-renomear-codigos-turma.xml"/>
+  <include file="db/changelog/changes/005-padronizar-codigos-turma.xml"/>
 
 </databaseChangeLog>

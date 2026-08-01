@@ -59,6 +59,12 @@ label {
   color: var(--muted);
 }
 
+label .hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.9;
+}
+
 input,
 select,
 button {

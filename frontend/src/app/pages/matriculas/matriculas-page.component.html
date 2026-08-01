@@ -17,7 +17,7 @@
       <select formControlName="turmaId">
         <option [ngValue]="0" disabled>Selecione</option>
         <option *ngFor="let t of turmas" [ngValue]="t.id">
-          {{ t.codigo }} ({{ t.periodo }}) ? {{ t.status }} ? vagas {{ t.vagasDisponiveis }}
+          {{ t.disciplinaCodigo }} · {{ t.codigo }} ({{ t.periodo }}) ? {{ t.status }} ? vagas {{ t.vagasDisponiveis }}
         </option>
       </select>
     </label>
@@ -38,7 +38,7 @@
       Filtrar por turma
       <select formControlName="turmaId">
         <option [ngValue]="0">?</option>
-        <option *ngFor="let t of turmas" [ngValue]="t.id">{{ t.codigo }} - {{ t.periodo }}</option>
+        <option *ngFor="let t of turmas" [ngValue]="t.id">{{ t.disciplinaCodigo }} · {{ t.codigo }} - {{ t.periodo }}</option>
       </select>
     </label>
     <div class="actions">

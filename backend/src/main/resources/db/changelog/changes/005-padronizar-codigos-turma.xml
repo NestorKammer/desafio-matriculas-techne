@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="005-padronizar-codigos-turma" author="desafio-matriculas" context="seed">
+    <comment>Garante codigo da turma no padrao DISCIPLINA-Tn (ex.: CC-ALG-T1)</comment>
+    <sql>
+      UPDATE t
+      SET
+        t.codigo = d.codigo + N'-' + CASE WHEN t.vagas_totais &gt;= 40 THEN N'T1' ELSE N'T2' END,
+        t.atualizado_em = CURRENT_TIMESTAMP
+      FROM turma t
+      INNER JOIN disciplina d ON d.id = t.disciplina_id
+      WHERE t.codigo NOT LIKE d.codigo + N'-%';
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>

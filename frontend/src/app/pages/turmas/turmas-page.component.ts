@@ -34,14 +34,41 @@ export class TurmasPageComponent implements OnInit {
     this.disciplinaService.listar().subscribe(lista => {
       this.disciplinas = lista;
       if (lista.length) {
-        this.form.patchValue({ disciplinaId: lista[0].id });
+        this.form.patchValue({ disciplinaId: lista[0].id }, { emitEvent: false });
+      }
+    });
+    this.form.controls.disciplinaId.valueChanges.subscribe(() => {
+      if (!this.editandoId) {
+        this.sugerirCodigo();
       }
     });
     this.carregar();
   }
 
+  /** Sugere codigo no padrao DISCIPLINA-Tn (ex.: CC-ALG-T1). */
+  sugerirCodigo(): void {
+    const disc = this.disciplinas.find(d => d.id === this.form.controls.disciplinaId.value);
+    if (!disc) {
+      return;
+    }
+    const prefixo = `${disc.codigo}-`;
+    const sufixos = this.turmas
+      .filter(t => t.disciplinaId === disc.id && t.codigo.startsWith(prefixo))
+      .map(t => {
+        const m = t.codigo.slice(prefixo.length).match(/^T(\d+)$/i);
+        return m ? Number(m[1]) : 0;
+      });
+    const proximo = (sufixos.length ? Math.max(...sufixos) : 0) + 1;
+    this.form.patchValue({ codigo: `${disc.codigo}-T${proximo}` });
+  }
+
   carregar(): void {
-    this.turmaService.listar().subscribe(lista => (this.turmas = lista));
+    this.turmaService.listar().subscribe(lista => {
+      this.turmas = lista;
+      if (!this.editandoId) {
+        this.sugerirCodigo();
+      }
+    });
   }
 
   salvar(): void {
@@ -108,10 +135,10 @@ export class TurmasPageComponent implements OnInit {
   limpar(): void {
     this.editandoId = null;
     this.form.patchValue({
-      codigo: '',
       periodo: '2026.1',
       vagasTotais: 30,
       disciplinaId: this.disciplinas[0]?.id ?? 0
     });
+    this.sugerirCodigo();
   }
 }
