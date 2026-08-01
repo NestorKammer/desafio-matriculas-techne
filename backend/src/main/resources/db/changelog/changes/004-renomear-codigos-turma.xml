@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="004-renomear-codigos-turma" author="desafio-matriculas" context="seed">
+    <comment>Prefixa codigo da turma com codigo da disciplina (ex.: T1 -&gt; CC-ALG-T1)</comment>
+    <sql>
+      UPDATE t
+      SET
+        t.codigo = d.codigo + N'-' + t.codigo,
+        t.atualizado_em = CURRENT_TIMESTAMP
+      FROM turma t
+      INNER JOIN disciplina d ON d.id = t.disciplina_id
+      WHERE t.codigo IN (N'T1', N'T2');
+    </sql>
+  </changeSet>
+
+</databaseChangeLog>

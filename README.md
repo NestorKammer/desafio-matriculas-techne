@@ -173,7 +173,7 @@ No profile Docker, o Liquibase carrega dados de demonstracao (`context=seed`):
 | CD | Ciencia de Dados |
 
 Disciplinas por curso: `ALG`, `BD`, `POO`, `WEB`, `SO` (ex.: `CC-ALG`).
-Turmas: `T1` (40 vagas) e `T2` (30 vagas) na disciplina `*-ALG` de cada curso.
+Turmas: `CC-ALG-T1` / `CC-ALG-T2` (etc.) — codigo = `{disciplina}-{T1|T2}`, 40 e 30 vagas, na disciplina `*-ALG`.
 
 Arquivos: `002-seed-alunos.xml`, `003-seed-cursos-disciplinas-turmas.xml` e CSVs em `db/changelog/data/`.
 Nos testes automatizados o seed **nao** e aplicado (`contexts: test`).

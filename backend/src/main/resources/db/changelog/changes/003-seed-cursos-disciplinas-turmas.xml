@@ -174,10 +174,11 @@
   </changeSet>
 
   <changeSet id="003-seed-turmas" author="desafio-matriculas" context="seed">
-    <comment>2 turmas por curso (na primeira disciplina de cada curso)</comment>
+    <validCheckSum>ANY</validCheckSum>
+    <comment>2 turmas por curso; codigo = DISCIPLINA-Tn (ex.: CC-ALG-T1)</comment>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CC-ALG')"/>
-      <column name="codigo" value="T1"/>
+      <column name="codigo" value="CC-ALG-T1"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="40"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -186,7 +187,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CC-ALG')"/>
-      <column name="codigo" value="T2"/>
+      <column name="codigo" value="CC-ALG-T2"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="30"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -195,7 +196,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ES-ALG')"/>
-      <column name="codigo" value="T1"/>
+      <column name="codigo" value="ES-ALG-T1"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="40"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -204,7 +205,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ES-ALG')"/>
-      <column name="codigo" value="T2"/>
+      <column name="codigo" value="ES-ALG-T2"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="30"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -213,7 +214,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'SI-ALG')"/>
-      <column name="codigo" value="T1"/>
+      <column name="codigo" value="SI-ALG-T1"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="40"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -222,7 +223,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'SI-ALG')"/>
-      <column name="codigo" value="T2"/>
+      <column name="codigo" value="SI-ALG-T2"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="30"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -231,7 +232,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ADS-ALG')"/>
-      <column name="codigo" value="T1"/>
+      <column name="codigo" value="ADS-ALG-T1"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="40"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -240,7 +241,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ADS-ALG')"/>
-      <column name="codigo" value="T2"/>
+      <column name="codigo" value="ADS-ALG-T2"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="30"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -249,7 +250,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CD-ALG')"/>
-      <column name="codigo" value="T1"/>
+      <column name="codigo" value="CD-ALG-T1"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="40"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
@@ -258,7 +259,7 @@
     </insert>
     <insert tableName="turma">
       <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CD-ALG')"/>
-      <column name="codigo" value="T2"/>
+      <column name="codigo" value="CD-ALG-T2"/>
       <column name="periodo" value="2026.1"/>
       <column name="vagas_totais" valueNumeric="30"/>
       <column name="vagas_ocupadas" valueNumeric="0"/>
