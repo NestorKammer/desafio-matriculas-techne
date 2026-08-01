@@ -1,14 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Curso } from '../../core/models';
 import { CursoService } from '../../services/curso.service';
 import { NotificationService } from '../../core/notification.service';
+import { focarBlocoEdicao } from '../../core/edit-focus';
+import { TabelaSort } from '../../core/tabela-sort';
 
 @Component({
   selector: 'app-cursos-page',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, NgTemplateOutlet],
   templateUrl: './cursos-page.component.html',
   styleUrl: './cursos-page.component.css'
 })
@@ -17,8 +19,15 @@ export class CursosPageComponent implements OnInit {
   private readonly service = inject(CursoService);
   private readonly notify = inject(NotificationService);
 
+  @ViewChild('blocoEdicao') blocoEdicao?: ElementRef<HTMLElement>;
+
+  readonly sort = new TabelaSort<Curso>('codigo');
   cursos: Curso[] = [];
   editandoId: number | null = null;
+
+  get cursosOrdenados(): Curso[] {
+    return this.sort.aplicar(this.cursos);
+  }
 
   form = this.fb.nonNullable.group({
     codigo: ['', Validators.required],
@@ -57,6 +66,7 @@ export class CursosPageComponent implements OnInit {
       nome: curso.nome,
       cargaHoraria: curso.cargaHoraria
     });
+    setTimeout(() => focarBlocoEdicao(this.blocoEdicao?.nativeElement));
   }
 
   excluir(curso: Curso): void {
@@ -72,5 +82,9 @@ export class CursosPageComponent implements OnInit {
   limpar(): void {
     this.editandoId = null;
     this.form.reset({ codigo: '', nome: '', cargaHoraria: 3600 });
+  }
+
+  ordenarPor(coluna: keyof Curso & string): void {
+    this.sort.toggle(coluna);
   }
 }

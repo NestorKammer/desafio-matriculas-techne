@@ -27,18 +27,14 @@ public class MatriculaController {
   }
 
   @GetMapping
-  @Operation(summary = "Consultar matriculas por alunoId ou turmaId")
+  @Operation(summary = "Consultar matriculas por alunoId e/ou turmaId (filtros combinados com E)")
   public List<MatriculaResponse> consultar(
       @RequestParam(required = false) Long alunoId,
       @RequestParam(required = false) Long turmaId
   ) {
-    if (alunoId != null) {
-      return matriculaService.listarPorAluno(alunoId).stream().map(MatriculaResponse::from).toList();
-    }
-    if (turmaId != null) {
-      return matriculaService.listarPorTurma(turmaId).stream().map(MatriculaResponse::from).toList();
-    }
-    throw new IllegalArgumentException("Informe alunoId ou turmaId para consultar matriculas");
+    return matriculaService.consultar(alunoId, turmaId).stream()
+        .map(MatriculaResponse::from)
+        .toList();
   }
 
   @GetMapping("/{id}")

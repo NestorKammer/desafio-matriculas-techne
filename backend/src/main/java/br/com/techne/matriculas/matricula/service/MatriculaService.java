@@ -99,4 +99,22 @@ public class MatriculaService {
     }
     return matriculaRepository.findByTurmaIdWithDetalhes(turmaId);
   }
+
+  /**
+   * Consulta com logica E: quando aluno e turma sao informados, retorna apenas
+   * matriculas que atendem aos dois filtros ao mesmo tempo.
+   */
+  @Transactional(readOnly = true)
+  public List<Matricula> consultar(Long alunoId, Long turmaId) {
+    if (alunoId == null && turmaId == null) {
+      throw new IllegalArgumentException("Informe alunoId e/ou turmaId para consultar matriculas");
+    }
+    if (alunoId != null && !alunoRepository.existsById(alunoId)) {
+      throw new RecursoNaoEncontradoException("Aluno", alunoId);
+    }
+    if (turmaId != null && !turmaRepository.existsById(turmaId)) {
+      throw new RecursoNaoEncontradoException("Turma", turmaId);
+    }
+    return matriculaRepository.findByFiltro(alunoId, turmaId);
+  }
 }

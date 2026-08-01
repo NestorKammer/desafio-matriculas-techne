@@ -4,47 +4,83 @@
     <p>Cadastro de cursos academicos.</p>
   </header>
 
-  <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
-    <label>
-      Codigo
-      <input formControlName="codigo" placeholder="ENG" />
-    </label>
-    <label>
-      Nome
-      <input formControlName="nome" placeholder="Engenharia" />
-    </label>
-    <label>
-      Carga horaria
-      <input formControlName="cargaHoraria" type="number" min="1" />
-    </label>
-    <div class="actions">
-      <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
-      <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+  <ng-template #formulario>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
+      <label>
+        Codigo
+        <input formControlName="codigo" placeholder="ENG" />
+      </label>
+      <label>
+        Nome
+        <input formControlName="nome" placeholder="Engenharia" />
+      </label>
+      <label>
+        Carga horaria
+        <input formControlName="cargaHoraria" type="number" min="1" />
+      </label>
+      <div class="actions">
+        <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+        <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+      </div>
+    </form>
+  </ng-template>
+
+  <div class="block block-acao" *ngIf="!editandoId">
+    <div class="block-head">
+      <h3>Novo curso</h3>
+      <p>Preencha os dados para cadastrar um curso.</p>
     </div>
-  </form>
+    <ng-container *ngTemplateOutlet="formulario"></ng-container>
+  </div>
 
   <div class="table-wrap" *ngIf="cursos.length; else vazio">
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Codigo</th>
-          <th>Nome</th>
-          <th>Carga</th>
-          <th></th>
+          <th [attr.aria-sort]="sort.aria('id')">
+            <button type="button" class="th-sort" (click)="ordenarPor('id')">
+              ID <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('codigo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('codigo')">
+              Codigo <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('nome')">
+            <button type="button" class="th-sort" (click)="ordenarPor('nome')">
+              Nome <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('cargaHoraria')">
+            <button type="button" class="th-sort" (click)="ordenarPor('cargaHoraria')">
+              Carga <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th class="col-actions">Acoes</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let c of cursos">
-          <td>{{ c.id }}</td>
-          <td>{{ c.codigo }}</td>
-          <td>{{ c.nome }}</td>
-          <td>{{ c.cargaHoraria }}</td>
-          <td class="row-actions">
-            <button type="button" class="link" (click)="editar(c)">Editar</button>
-            <button type="button" class="link danger" (click)="excluir(c)">Excluir</button>
-          </td>
-        </tr>
+        <ng-container *ngFor="let c of cursosOrdenados">
+          <tr [class.is-editing-row]="editandoId === c.id">
+            <td>{{ c.id }}</td>
+            <td>{{ c.codigo }}</td>
+            <td>{{ c.nome }}</td>
+            <td>{{ c.cargaHoraria }}</td>
+            <td class="row-actions col-actions">
+              <button type="button" class="link" (click)="editar(c)">Editar</button>
+              <button type="button" class="link danger" (click)="excluir(c)">Excluir</button>
+            </td>
+          </tr>
+          <tr class="inline-edit-row" *ngIf="editandoId === c.id">
+            <td colspan="5">
+              <div #blocoEdicao class="edit-block is-editing" tabindex="-1">
+                <p class="edit-banner">Editando curso #{{ editandoId }}</p>
+                <ng-container *ngTemplateOutlet="formulario"></ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

@@ -27,6 +27,7 @@
   background: #1f7a6c;
   font-weight: 700;
   font-size: 0.85rem;
+  flex-shrink: 0;
 }
 
 .brand strong {
@@ -49,6 +50,7 @@ nav a {
   text-decoration: none;
   padding: 0.55rem 0.7rem;
   border-radius: 0.45rem;
+  white-space: nowrap;
 }
 
 nav a:hover,
@@ -58,8 +60,9 @@ nav a.active {
 }
 
 .content {
-  padding: 1.25rem 1.5rem 2rem;
+  padding: var(--page-pad) 1.5rem 2rem;
   position: relative;
+  min-width: 0;
 }
 
 .toast {
@@ -91,20 +94,61 @@ nav a.active {
   cursor: pointer;
   font-weight: 600;
   color: inherit;
+  flex-shrink: 0;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
   }
 
   .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     border-right: 0;
     border-bottom: 1px solid #1f3340;
+    padding: 0.85rem 0.9rem;
+  }
+
+  .brand {
+    margin-bottom: 0.75rem;
   }
 
   nav {
     flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.15rem;
+    margin: 0 -0.15rem;
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
+  }
+
+  nav a {
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .content {
+    padding: 1rem 0.9rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand strong {
+    font-size: 0.9rem;
+  }
+
+  .brand small {
+    font-size: 0.75rem;
+  }
+
+  .toast {
+    align-items: flex-start;
     flex-wrap: wrap;
   }
 }

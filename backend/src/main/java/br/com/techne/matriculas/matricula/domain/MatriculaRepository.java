@@ -38,4 +38,18 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
       order by m.criadoEm desc
       """)
   List<Matricula> findByTurmaIdWithDetalhes(@Param("turmaId") Long turmaId);
+
+  @Query("""
+      select m from Matricula m
+      join fetch m.aluno
+      join fetch m.turma t
+      join fetch t.disciplina
+      where (:alunoId is null or m.aluno.id = :alunoId)
+        and (:turmaId is null or m.turma.id = :turmaId)
+      order by m.criadoEm desc
+      """)
+  List<Matricula> findByFiltro(
+      @Param("alunoId") Long alunoId,
+      @Param("turmaId") Long turmaId
+  );
 }

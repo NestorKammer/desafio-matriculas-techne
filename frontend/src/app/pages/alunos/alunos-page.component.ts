@@ -1,14 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Aluno } from '../../core/models';
 import { AlunoService } from '../../services/aluno.service';
 import { NotificationService } from '../../core/notification.service';
+import { focarBlocoEdicao } from '../../core/edit-focus';
+import { TabelaSort } from '../../core/tabela-sort';
 
 @Component({
   selector: 'app-alunos-page',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, NgTemplateOutlet],
   templateUrl: './alunos-page.component.html',
   styleUrl: './alunos-page.component.css'
 })
@@ -17,8 +19,15 @@ export class AlunosPageComponent implements OnInit {
   private readonly service = inject(AlunoService);
   private readonly notify = inject(NotificationService);
 
+  @ViewChild('blocoEdicao') blocoEdicao?: ElementRef<HTMLElement>;
+
+  readonly sort = new TabelaSort<Aluno>('id');
   alunos: Aluno[] = [];
   editandoId: number | null = null;
+
+  get alunosOrdenados(): Aluno[] {
+    return this.sort.aplicar(this.alunos);
+  }
 
   form = this.fb.nonNullable.group({
     nome: ['', [Validators.required, Validators.maxLength(150)]],
@@ -54,6 +63,7 @@ export class AlunosPageComponent implements OnInit {
   editar(aluno: Aluno): void {
     this.editandoId = aluno.id;
     this.form.setValue({ nome: aluno.nome, email: aluno.email, ra: aluno.ra });
+    setTimeout(() => focarBlocoEdicao(this.blocoEdicao?.nativeElement));
   }
 
   excluir(aluno: Aluno): void {
@@ -69,5 +79,9 @@ export class AlunosPageComponent implements OnInit {
   limpar(): void {
     this.editandoId = null;
     this.form.reset({ nome: '', email: '', ra: '' });
+  }
+
+  ordenarPor(coluna: keyof Aluno & string): void {
+    this.sort.toggle(coluna);
   }
 }

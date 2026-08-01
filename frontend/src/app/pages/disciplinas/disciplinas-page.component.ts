@@ -1,15 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Curso, Disciplina } from '../../core/models';
 import { CursoService } from '../../services/curso.service';
 import { DisciplinaService } from '../../services/disciplina.service';
 import { NotificationService } from '../../core/notification.service';
+import { focarBlocoEdicao } from '../../core/edit-focus';
+import { TabelaSort } from '../../core/tabela-sort';
 
 @Component({
   selector: 'app-disciplinas-page',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, NgTemplateOutlet],
   templateUrl: './disciplinas-page.component.html',
   styleUrl: './disciplinas-page.component.css'
 })
@@ -19,9 +21,16 @@ export class DisciplinasPageComponent implements OnInit {
   private readonly cursoService = inject(CursoService);
   private readonly notify = inject(NotificationService);
 
+  @ViewChild('blocoEdicao') blocoEdicao?: ElementRef<HTMLElement>;
+
+  readonly sort = new TabelaSort<Disciplina>('codigo');
   cursos: Curso[] = [];
   disciplinas: Disciplina[] = [];
   editandoId: number | null = null;
+
+  get disciplinasOrdenadas(): Disciplina[] {
+    return this.sort.aplicar(this.disciplinas);
+  }
 
   form = this.fb.nonNullable.group({
     cursoId: [0, [Validators.required, Validators.min(1)]],
@@ -68,6 +77,7 @@ export class DisciplinasPageComponent implements OnInit {
       nome: d.nome,
       cargaHoraria: d.cargaHoraria
     });
+    setTimeout(() => focarBlocoEdicao(this.blocoEdicao?.nativeElement));
   }
 
   excluir(d: Disciplina): void {
@@ -88,5 +98,9 @@ export class DisciplinasPageComponent implements OnInit {
       cargaHoraria: 80,
       cursoId: this.cursos[0]?.id ?? 0
     });
+  }
+
+  ordenarPor(coluna: keyof Disciplina & string): void {
+    this.sort.toggle(coluna);
   }
 }

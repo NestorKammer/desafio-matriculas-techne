@@ -1,0 +1,35 @@
+<div class="aluno-search" [class.open]="aberto" [class.disabled]="disabled">
+  <input
+    type="text"
+    [value]="termo"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    autocomplete="off"
+    (focus)="abrir()"
+    (input)="onInput($event)"
+    (keydown.escape)="fechar()"
+  />
+  <ul class="aluno-search-list" *ngIf="aberto">
+    <li *ngIf="allowEmpty">
+      <button
+        type="button"
+        [class.active]="estaSelecionado(0)"
+        (mousedown)="$event.preventDefault()"
+        (click)="selecionarVazio()"
+      >
+        {{ emptyLabel }}
+      </button>
+    </li>
+    <li *ngFor="let a of opcoes">
+      <button
+        type="button"
+        [class.active]="estaSelecionado(a.id)"
+        (mousedown)="$event.preventDefault()"
+        (click)="selecionar(a)"
+      >
+        {{ rotulo(a) }}
+      </button>
+    </li>
+    <li class="empty" *ngIf="!opcoes.length">Nenhum aluno encontrado</li>
+  </ul>
+</div>

@@ -142,4 +142,24 @@ class MatriculaApiTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value(matriculaId));
   }
+
+  @Test
+  void deveConsultarComFiltrosCombinadosComE() throws Exception {
+    Long turma2 = fixture.criarTurma(
+        fixture.criarDisciplina(fixture.criarCurso("ADS"), "ALG1"),
+        "T2",
+        5
+    );
+    Long aluno2 = fixture.criarAluno("Joao Souza", "joao@teste.com", "RA200");
+    Long matriculaAlvo = fixture.matricular(alunoId, turmaId);
+    fixture.matricular(alunoId, turma2);
+    fixture.matricular(aluno2, turmaId);
+
+    mockMvc.perform(get("/api/matriculas")
+            .param("alunoId", alunoId.toString())
+            .param("turmaId", turmaId.toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].id").value(matriculaAlvo));
+  }
 }

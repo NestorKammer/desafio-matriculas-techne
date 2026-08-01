@@ -6,11 +6,13 @@ import { AlunoService } from '../../services/aluno.service';
 import { TurmaService } from '../../services/turma.service';
 import { MatriculaService } from '../../services/matricula.service';
 import { NotificationService } from '../../core/notification.service';
+import { TabelaSort } from '../../core/tabela-sort';
+import { AlunoSearchSelectComponent } from '../../shared/aluno-search-select.component';
 
 @Component({
   selector: 'app-matriculas-page',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, AlunoSearchSelectComponent],
   templateUrl: './matriculas-page.component.html',
   styleUrl: './matriculas-page.component.css'
 })
@@ -21,9 +23,14 @@ export class MatriculasPageComponent implements OnInit {
   private readonly turmaService = inject(TurmaService);
   private readonly notify = inject(NotificationService);
 
+  readonly sort = new TabelaSort<Matricula>('id');
   alunos: Aluno[] = [];
   turmas: Turma[] = [];
   matriculas: Matricula[] = [];
+
+  get matriculasOrdenadas(): Matricula[] {
+    return this.sort.aplicar(this.matriculas);
+  }
 
   form = this.fb.nonNullable.group({
     alunoId: [0, [Validators.required, Validators.min(1)]],
@@ -39,8 +46,11 @@ export class MatriculasPageComponent implements OnInit {
     this.alunoService.listar().subscribe(lista => {
       this.alunos = lista;
       if (lista.length) {
-        this.form.patchValue({ alunoId: lista[0].id });
-        this.filtro.patchValue({ alunoId: lista[0].id });
+        const primeiro = [...lista].sort((a, b) =>
+          a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' })
+        )[0];
+        this.form.patchValue({ alunoId: primeiro.id });
+        this.filtro.patchValue({ alunoId: primeiro.id });
         this.consultar();
       }
     });
@@ -69,7 +79,7 @@ export class MatriculasPageComponent implements OnInit {
   consultar(): void {
     const { alunoId, turmaId } = this.filtro.getRawValue();
     if (!alunoId && !turmaId) {
-      this.notify.erro('Informe aluno ou turma para consultar');
+      this.notify.erro('Informe aluno e/ou turma para consultar (filtros combinados com E)');
       return;
     }
     this.matriculaService
@@ -94,5 +104,9 @@ export class MatriculasPageComponent implements OnInit {
       this.consultar();
       this.turmaService.listar().subscribe(lista => (this.turmas = lista));
     });
+  }
+
+  ordenarPor(coluna: keyof Matricula & string): void {
+    this.sort.toggle(coluna);
   }
 }

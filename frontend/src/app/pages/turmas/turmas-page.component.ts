@@ -1,15 +1,17 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Disciplina, Turma } from '../../core/models';
 import { DisciplinaService } from '../../services/disciplina.service';
 import { TurmaService } from '../../services/turma.service';
 import { NotificationService } from '../../core/notification.service';
+import { focarBlocoEdicao } from '../../core/edit-focus';
+import { TabelaSort } from '../../core/tabela-sort';
 
 @Component({
   selector: 'app-turmas-page',
   standalone: true,
-  imports: [ReactiveFormsModule, NgFor, NgIf],
+  imports: [ReactiveFormsModule, NgFor, NgIf, NgTemplateOutlet],
   templateUrl: './turmas-page.component.html',
   styleUrl: './turmas-page.component.css'
 })
@@ -19,9 +21,16 @@ export class TurmasPageComponent implements OnInit {
   private readonly disciplinaService = inject(DisciplinaService);
   private readonly notify = inject(NotificationService);
 
+  @ViewChild('blocoEdicao') blocoEdicao?: ElementRef<HTMLElement>;
+
+  readonly sort = new TabelaSort<Turma>('codigo');
   disciplinas: Disciplina[] = [];
   turmas: Turma[] = [];
   editandoId: number | null = null;
+
+  get turmasOrdenadas(): Turma[] {
+    return this.sort.aplicar(this.turmas);
+  }
 
   form = this.fb.nonNullable.group({
     disciplinaId: [0, [Validators.required, Validators.min(1)]],
@@ -106,6 +115,7 @@ export class TurmasPageComponent implements OnInit {
       periodo: t.periodo,
       vagasTotais: t.vagasTotais
     });
+    setTimeout(() => focarBlocoEdicao(this.blocoEdicao?.nativeElement));
   }
 
   abrir(t: Turma): void {
@@ -140,5 +150,9 @@ export class TurmasPageComponent implements OnInit {
       disciplinaId: this.disciplinas[0]?.id ?? 0
     });
     this.sugerirCodigo();
+  }
+
+  ordenarPor(coluna: keyof Turma & string): void {
+    this.sort.toggle(coluna);
   }
 }

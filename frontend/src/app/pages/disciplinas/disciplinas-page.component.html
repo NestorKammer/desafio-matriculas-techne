@@ -4,56 +4,96 @@
     <p>Disciplinas vinculadas a um curso.</p>
   </header>
 
-  <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
-    <label>
-      Curso
-      <select formControlName="cursoId">
-        <option [ngValue]="0" disabled>Selecione</option>
-        <option *ngFor="let c of cursos" [ngValue]="c.id">{{ c.codigo }} - {{ c.nome }}</option>
-      </select>
-    </label>
-    <label>
-      Codigo
-      <input formControlName="codigo" placeholder="CAL1" />
-    </label>
-    <label>
-      Nome
-      <input formControlName="nome" placeholder="Calculo I" />
-    </label>
-    <label>
-      Carga horaria
-      <input formControlName="cargaHoraria" type="number" min="1" />
-    </label>
-    <div class="actions">
-      <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
-      <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+  <ng-template #formulario>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
+      <label>
+        Curso
+        <select formControlName="cursoId">
+          <option [ngValue]="0" disabled>Selecione</option>
+          <option *ngFor="let c of cursos" [ngValue]="c.id">{{ c.codigo }} - {{ c.nome }}</option>
+        </select>
+      </label>
+      <label>
+        Codigo
+        <input formControlName="codigo" placeholder="CAL1" />
+      </label>
+      <label>
+        Nome
+        <input formControlName="nome" placeholder="Calculo I" />
+      </label>
+      <label>
+        Carga horaria
+        <input formControlName="cargaHoraria" type="number" min="1" />
+      </label>
+      <div class="actions">
+        <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+        <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+      </div>
+    </form>
+  </ng-template>
+
+  <div class="block block-acao" *ngIf="!editandoId">
+    <div class="block-head">
+      <h3>Nova disciplina</h3>
+      <p>Vincule a disciplina a um curso e informe codigo, nome e carga.</p>
     </div>
-  </form>
+    <ng-container *ngTemplateOutlet="formulario"></ng-container>
+  </div>
 
   <div class="table-wrap" *ngIf="disciplinas.length; else vazio">
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Curso</th>
-          <th>Codigo</th>
-          <th>Nome</th>
-          <th>Carga</th>
-          <th></th>
+          <th [attr.aria-sort]="sort.aria('id')">
+            <button type="button" class="th-sort" (click)="ordenarPor('id')">
+              ID <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('cursoCodigo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('cursoCodigo')">
+              Curso <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('codigo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('codigo')">
+              Codigo <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('nome')">
+            <button type="button" class="th-sort" (click)="ordenarPor('nome')">
+              Nome <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('cargaHoraria')">
+            <button type="button" class="th-sort" (click)="ordenarPor('cargaHoraria')">
+              Carga <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th class="col-actions">Acoes</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let d of disciplinas">
-          <td>{{ d.id }}</td>
-          <td>{{ d.cursoCodigo }}</td>
-          <td>{{ d.codigo }}</td>
-          <td>{{ d.nome }}</td>
-          <td>{{ d.cargaHoraria }}</td>
-          <td class="row-actions">
-            <button type="button" class="link" (click)="editar(d)">Editar</button>
-            <button type="button" class="link danger" (click)="excluir(d)">Excluir</button>
-          </td>
-        </tr>
+        <ng-container *ngFor="let d of disciplinasOrdenadas">
+          <tr [class.is-editing-row]="editandoId === d.id">
+            <td>{{ d.id }}</td>
+            <td>{{ d.cursoCodigo }}</td>
+            <td>{{ d.codigo }}</td>
+            <td>{{ d.nome }}</td>
+            <td>{{ d.cargaHoraria }}</td>
+            <td class="row-actions col-actions">
+              <button type="button" class="link" (click)="editar(d)">Editar</button>
+              <button type="button" class="link danger" (click)="excluir(d)">Excluir</button>
+            </td>
+          </tr>
+          <tr class="inline-edit-row" *ngIf="editandoId === d.id">
+            <td colspan="6">
+              <div #blocoEdicao class="edit-block is-editing" tabindex="-1">
+                <p class="edit-banner">Editando disciplina #{{ editandoId }}</p>
+                <ng-container *ngTemplateOutlet="formulario"></ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

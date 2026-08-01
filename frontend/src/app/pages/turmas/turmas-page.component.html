@@ -4,65 +4,111 @@
     <p>Controle de vagas e status (ABERTA / FECHADA).</p>
   </header>
 
-  <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
-    <label>
-      Disciplina
-      <select formControlName="disciplinaId">
-        <option [ngValue]="0" disabled>Selecione</option>
-        <option *ngFor="let d of disciplinas" [ngValue]="d.id">{{ d.codigo }} - {{ d.nome }}</option>
-      </select>
-    </label>
-    <label>
-      Codigo
-      <input formControlName="codigo" placeholder="CC-ALG-T1" />
-      <small class="hint">Padrao sugerido: codigo da disciplina + -Tn</small>
-    </label>
-    <label>
-      Periodo
-      <input formControlName="periodo" placeholder="2026.1" />
-    </label>
-    <label>
-      Vagas totais
-      <input formControlName="vagasTotais" type="number" min="0" />
-    </label>
-    <div class="actions">
-      <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
-      <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+  <ng-template #formulario>
+    <form class="form-grid" [formGroup]="form" (ngSubmit)="salvar()">
+      <label>
+        Disciplina
+        <select formControlName="disciplinaId">
+          <option [ngValue]="0" disabled>Selecione</option>
+          <option *ngFor="let d of disciplinas" [ngValue]="d.id">{{ d.codigo }} - {{ d.nome }}</option>
+        </select>
+      </label>
+      <label>
+        <span class="label-heading">
+          Codigo
+          <small class="hint">Padrao sugerido: codigo da disciplina + -Tn</small>
+        </span>
+        <input formControlName="codigo" placeholder="CC-ALG-T1" />
+      </label>
+      <label>
+        Periodo
+        <input formControlName="periodo" placeholder="2026.1" />
+      </label>
+      <label>
+        Vagas totais
+        <input formControlName="vagasTotais" type="number" min="0" />
+      </label>
+      <div class="actions">
+        <button type="submit">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+        <button type="button" class="ghost" (click)="limpar()" *ngIf="editandoId">Cancelar</button>
+      </div>
+    </form>
+  </ng-template>
+
+  <div class="block block-acao" *ngIf="!editandoId">
+    <div class="block-head">
+      <h3>Nova turma</h3>
+      <p>Defina disciplina, codigo, periodo e vagas para abrir uma turma.</p>
     </div>
-  </form>
+    <ng-container *ngTemplateOutlet="formulario"></ng-container>
+  </div>
 
   <div class="table-wrap" *ngIf="turmas.length; else vazio">
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Disc.</th>
-          <th>Codigo</th>
-          <th>Periodo</th>
-          <th>Vagas</th>
-          <th>Status</th>
-          <th></th>
+          <th [attr.aria-sort]="sort.aria('id')">
+            <button type="button" class="th-sort" (click)="ordenarPor('id')">
+              ID <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('disciplinaCodigo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('disciplinaCodigo')">
+              Disc. <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('codigo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('codigo')">
+              Codigo <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('periodo')">
+            <button type="button" class="th-sort" (click)="ordenarPor('periodo')">
+              Periodo <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('vagasOcupadas')">
+            <button type="button" class="th-sort" (click)="ordenarPor('vagasOcupadas')">
+              Vagas <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="sort.aria('status')">
+            <button type="button" class="th-sort" (click)="ordenarPor('status')">
+              Status <span class="sort-mark" aria-hidden="true"></span>
+            </button>
+          </th>
+          <th class="col-actions">Acoes</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let t of turmas">
-          <td>{{ t.id }}</td>
-          <td>{{ t.disciplinaCodigo }}</td>
-          <td>{{ t.codigo }}</td>
-          <td>{{ t.periodo }}</td>
-          <td>{{ t.vagasOcupadas }}/{{ t.vagasTotais }}</td>
-          <td>
-            <span class="badge" [class.open]="t.status === 'ABERTA'" [class.closed]="t.status === 'FECHADA'">
-              {{ t.status }}
-            </span>
-          </td>
-          <td class="row-actions">
-            <button type="button" class="link" (click)="editar(t)">Editar</button>
-            <button type="button" class="link" (click)="abrir(t)" *ngIf="t.status === 'FECHADA'">Abrir</button>
-            <button type="button" class="link" (click)="fechar(t)" *ngIf="t.status === 'ABERTA'">Fechar</button>
-            <button type="button" class="link danger" (click)="excluir(t)">Excluir</button>
-          </td>
-        </tr>
+        <ng-container *ngFor="let t of turmasOrdenadas">
+          <tr [class.is-editing-row]="editandoId === t.id">
+            <td>{{ t.id }}</td>
+            <td>{{ t.disciplinaCodigo }}</td>
+            <td>{{ t.codigo }}</td>
+            <td>{{ t.periodo }}</td>
+            <td>{{ t.vagasOcupadas }}/{{ t.vagasTotais }}</td>
+            <td>
+              <span class="badge" [class.open]="t.status === 'ABERTA'" [class.closed]="t.status === 'FECHADA'">
+                {{ t.status }}
+              </span>
+            </td>
+            <td class="row-actions col-actions">
+              <button type="button" class="link" (click)="editar(t)">Editar</button>
+              <button type="button" class="link" (click)="abrir(t)" *ngIf="t.status === 'FECHADA'">Abrir</button>
+              <button type="button" class="link" (click)="fechar(t)" *ngIf="t.status === 'ABERTA'">Fechar</button>
+              <button type="button" class="link danger" (click)="excluir(t)">Excluir</button>
+            </td>
+          </tr>
+          <tr class="inline-edit-row" *ngIf="editandoId === t.id">
+            <td colspan="7">
+              <div #blocoEdicao class="edit-block is-editing" tabindex="-1">
+                <p class="edit-banner">Editando turma #{{ editandoId }}</p>
+                <ng-container *ngTemplateOutlet="formulario"></ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>
