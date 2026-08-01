@@ -1,0 +1,6 @@
+codigo,nome,carga_horaria,ativo
+CC,Ciencia da Computacao,3600,true
+ES,Engenharia de Software,3200,true
+SI,Sistemas de Informacao,3000,true
+ADS,Analise e Desenvolvimento de Sistemas,2800,true
+CD,Ciencia de Dados,3000,true

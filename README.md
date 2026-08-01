@@ -1,37 +1,37 @@
-# Gest„o de MatrÌculas AcadÍmicas
+# Gest√£o de Matr√≠culas Acad√™micas
 
-SoluÁ„o do desafio tÈcnico Pleno (Tribe Lyceum / Techne): API Spring Boot + frontend Angular + SQL Server, com regras de matrÌcula, controle de vagas, testes e Docker Compose.
+Solu√ß√£o do desafio t√©cnico Pleno (Tribe Lyceum / Techne): API Spring Boot + frontend Angular + SQL Server, com regras de matr√≠cula, controle de vagas, testes e Docker Compose.
 
 ## Stack
 
 | Camada | Tecnologia |
 |--------|------------|
 | Backend | Java 21, Spring Boot 3.3, Spring Web, Spring Data JPA, Bean Validation |
-| PersistÍncia | SQL Server 2022, Liquibase, Hibernate (`ddl-auto=validate`) |
+| Persist√™ncia | SQL Server 2022, Liquibase, Hibernate (`ddl-auto=validate`) |
 | API docs | springdoc-openapi (Swagger UI) |
 | Frontend | Angular 19 (standalone), Reactive Forms, HttpClient |
 | Testes | JUnit 5, MockMvc, H2 (profile `test`) |
 | Infra | Docker Compose (SQL Server + backend + frontend/nginx) |
 
-## PrÈ-requisitos
+## Pr√©-requisitos
 
 - Docker + Docker Compose **ou**
 - Java 21 + Maven 3.9+ e Node 20+ (modo desenvolvimento local)
 
 ## Como executar (recomendado: stack completa)
 
-Na raiz do repositÛrio:
+Na raiz do reposit√≥rio:
 
 ```bash
-cp .env.example .env   # se ainda n„o existir
+cp .env.example .env   # se ainda n√£o existir
 ./bin/stack-up.sh
 # equivalente:
 # docker compose --env-file .env up -d --build
 ```
 
-ServiÁos publicados:
+Servi√ßos publicados:
 
-| ServiÁo | URL |
+| Servi√ßo | URL |
 |---------|-----|
 | Frontend | http://localhost:4200 |
 | Backend API | http://localhost:8080 |
@@ -39,14 +39,14 @@ ServiÁos publicados:
 | OpenAPI JSON | http://localhost:8080/api-docs |
 | SQL Server | `localhost:1433` / database `matriculas_db` |
 
-O nginx do frontend faz proxy de `/api` (e Swagger) para o backend ? d· para usar a UI em `:4200` sem CORS.
+O nginx do frontend faz proxy de `/api` (e Swagger) para o backend ? d√° para usar a UI em `:4200` sem CORS.
 
-Credenciais padr„o (`.env`):
+Credenciais padr√£o (`.env`):
 
-- usu·rio: `sa`
+- usu√°rio: `sa`
 - senha: `Matriculas@2026`
 
-### SÛ o banco
+### S√≥ o banco
 
 ```bash
 ./bin/db-up.sh
@@ -76,20 +76,20 @@ cd backend
 mvn test
 ```
 
-SuÌte atual (~18 testes):
+Su√≠te atual (~18 testes):
 
-- `MatriculaRegrasTest` ? regras de domÌnio (vagas, status, turma fechada, aluno inativo)
-- `AlunoApiTest` ? CRUD, validaÁ„o 400, duplicidade, 404
+- `MatriculaRegrasTest` ? regras de dom√≠nio (vagas, status, turma fechada, aluno inativo)
+- `AlunoApiTest` ? CRUD, valida√ß√£o 400, duplicidade, 404
 - `MatriculaApiTest` ? fluxo PENDENTE ? confirmar/cancelar, sem vaga, duplicada, consultas
 
-Profile `test`: H2 + Liquibase (mesmo changelog da aplicaÁ„o).
+Profile `test`: H2 + Liquibase (mesmo changelog da aplica√ß√£o).
 
 ## Swagger / OpenAPI
 
 Com o backend no ar:
 
 - UI: http://localhost:8080/swagger-ui/index.html
-- TambÈm via frontend: http://localhost:4200/swagger-ui/index.html
+- Tamb√©m via frontend: http://localhost:4200/swagger-ui/index.html
 
 Endpoints principais:
 
@@ -102,113 +102,127 @@ Endpoints principais:
 ```
 controller (api)  ? DTOs + Bean Validation
 service           ? regras + @Transactional
-domain            ? entidades, enums, comportamento de negÛcio
+domain            ? entidades, enums, comportamento de neg√≥cio
 repository        ? Spring Data JPA
 shared            ? ErroResposta + @RestControllerAdvice
 ```
 
-OrganizaÁ„o por feature: `aluno`, `curso`, `disciplina`, `turma`, `matricula`.
+Organiza√ß√£o por feature: `aluno`, `curso`, `disciplina`, `turma`, `matricula`.
 
 Schema versionado em:
 
 `backend/src/main/resources/db/changelog/`
 
-## Principais decisıes tÈcnicas
+## Principais decis√µes t√©cnicas
 
-1. **MatrÌcula inicia em `PENDENTE`** e **n„o consome vaga**. O consumo ocorre sÛ em `confirmar`, alinhado ao enunciado (status + vagas).
-2. **Liquibase dono do schema**; Hibernate em `validate` ? evita drift entre migraÁ„o e entidades.
-3. **DTOs na borda HTTP**; entidades n„o s„o expostas na API.
-4. **Erros padronizados** (`ErroResposta`): 400 validaÁ„o, 404 recurso, 409 regra/negÛcio/integridade.
+1. **Matr√≠cula inicia em `PENDENTE`** e **n√£o consome vaga**. O consumo ocorre s√≥ em `confirmar`, alinhado ao enunciado (status + vagas).
+2. **Liquibase dono do schema**; Hibernate em `validate` ? evita drift entre migra√ß√£o e entidades.
+3. **DTOs na borda HTTP**; entidades n√£o s√£o expostas na API.
+4. **Erros padronizados** (`ErroResposta`): 400 valida√ß√£o, 404 recurso, 409 regra/neg√≥cio/integridade.
 5. **Frontend** separado, consumindo a API; em Compose, nginx unifica origem.
-6. **SQL Server no Compose** atende o requisito de ambiente reproduzÌvel (sem depender de host externo).
+6. **SQL Server no Compose** atende o requisito de ambiente reproduz√≠vel (sem depender de host externo).
 
 ## Como a regra de vagas foi protegida
 
 Mecanismos combinados:
 
-1. DomÌnio (`Turma.consumirVaga` / `liberarVaga`) valida turma `ABERTA` e `vagasOcupadas < vagasTotais`.
-2. ServiÁo de confirmaÁ„o/cancelamento usa **`@Transactional`** + **`PESSIMISTIC_WRITE`** na turma (`findByIdForUpdate`), serializando concorrÍncia na mesma turma.
-3. ApÛs o lock, a matrÌcula È **relida** antes de confirmar (evita double-confirm).
+1. Dom√≠nio (`Turma.consumirVaga` / `liberarVaga`) valida turma `ABERTA` e `vagasOcupadas < vagasTotais`.
+2. Servi√ßo de confirma√ß√£o/cancelamento usa **`@Transactional`** + **`PESSIMISTIC_WRITE`** na turma (`findByIdForUpdate`), serializando concorr√™ncia na mesma turma.
+3. Ap√≥s o lock, a matr√≠cula √© **relida** antes de confirmar (evita double-confirm).
 4. Constraint **UNIQUE `(aluno_id, turma_id)`** no banco.
 5. Check constraint de vagas no Liquibase (`vagas_ocupadas <= vagas_totais`).
-6. Campo **`@Version`** na turma como reforÁo otimista.
+6. Campo **`@Version`** na turma como refor√ßo otimista.
 
-Cancelar `CONFIRMADA` libera vaga; cancelar `PENDENTE` sÛ muda status.
+Cancelar `CONFIRMADA` libera vaga; cancelar `PENDENTE` s√≥ muda status.
 
-## Como as regras crÌticas foram testadas
+## Como as regras cr√≠ticas foram testadas
 
-| Cen·rio | Onde |
+| Cen√°rio | Onde |
 |---------|------|
-| PENDENTE n„o consome vaga | domÌnio + API |
-| Confirmar consome 1 vaga | domÌnio + API |
-| Cancelar CONFIRMADA libera vaga | domÌnio + API |
-| Turma FECHADA bloqueia matrÌcula | domÌnio + API |
-| Sem vaga na confirmaÁ„o | domÌnio + API |
+| PENDENTE n√£o consome vaga | dom√≠nio + API |
+| Confirmar consome 1 vaga | dom√≠nio + API |
+| Cancelar CONFIRMADA libera vaga | dom√≠nio + API |
+| Turma FECHADA bloqueia matr√≠cula | dom√≠nio + API |
+| Sem vaga na confirma√ß√£o | dom√≠nio + API |
 | Duplicidade aluno+turma | API (409) |
 | Consulta por aluno / turma | API |
-| ValidaÁ„o de entrada / 404 | API |
+| Valida√ß√£o de entrada / 404 | API |
 
 ## Fluxo sugerido na UI
 
 1. Cadastrar **Curso** ? **Disciplina** ? **Turma** (ABERTA, com vagas)
 2. Cadastrar **Aluno**
-3. Em **MatrÌculas**: criar (PENDENTE) ? **Confirmar** (consome vaga) ou **Cancelar**
+3. Em **Matr√≠culas**: criar (PENDENTE) ? **Confirmar** (consome vaga) ou **Cancelar**
 
 ## Dados iniciais (seed)
 
-No profile Docker, o Liquibase carrega **50 alunos** de demonstraÁ„o (`context=seed`):
+No profile Docker, o Liquibase carrega dados de demonstracao (`context=seed`):
 
-- RA: `SEED001` ? `SEED050`
-- E-mail: `aluno01@matriculas.local` ? `aluno50@matriculas.local`
+**Alunos (50)**
+- RA: `SEED001` ‚Ä¶ `SEED050`
+- E-mail: `aluno01@matriculas.local` ‚Ä¶ `aluno50@matriculas.local`
 
-Arquivos: `backend/src/main/resources/db/changelog/changes/002-seed-alunos.xml` e `data/alunos-seed.csv`.  
-Nos testes automatizados o seed **n„o** È aplicado (`contexts: test`).
+**Cursos de tecnologia (5)** ‚Äî cada um com **5 disciplinas** e **2 turmas** (ABERTAS, periodo `2026.1`):
 
-## LimitaÁıes conhecidas
+| Codigo | Curso |
+|--------|--------|
+| CC | Ciencia da Computacao |
+| ES | Engenharia de Software |
+| SI | Sistemas de Informacao |
+| ADS | Analise e Desenvolvimento de Sistemas |
+| CD | Ciencia de Dados |
 
-- Sem autenticaÁ„o/autorizaÁ„o (fora do escopo do desafio).
-- Listagens sem paginaÁ„o/filtros avanÁados (podem ser adicionados como diferencial).
-- Testes de concorrÍncia pesada (duas threads na ˙ltima vaga) n„o est„o na suÌte atual; a proteÁ„o È por lock pessimista no serviÁo.
-- Exclus„o de entidades com FKs pode falhar por integridade (comportamento esperado; resposta 409).
-- Build Docker do backend/frontend È mais lento na primeira execuÁ„o (download Maven/npm).
+Disciplinas por curso: `ALG`, `BD`, `POO`, `WEB`, `SO` (ex.: `CC-ALG`).
+Turmas: `T1` (40 vagas) e `T2` (30 vagas) na disciplina `*-ALG` de cada curso.
+
+Arquivos: `002-seed-alunos.xml`, `003-seed-cursos-disciplinas-turmas.xml` e CSVs em `db/changelog/data/`.
+Nos testes automatizados o seed **nao** e aplicado (`contexts: test`).
+
+## Limita√ß√µes conhecidas
+
+- Sem autentica√ß√£o/autoriza√ß√£o (fora do escopo do desafio).
+- Listagens sem pagina√ß√£o/filtros avan√ßados (podem ser adicionados como diferencial).
+- Testes de concorr√™ncia pesada (duas threads na √∫ltima vaga) n√£o est√£o na su√≠te atual; a prote√ß√£o √© por lock pessimista no servi√ßo.
+- Exclus√£o de entidades com FKs pode falhar por integridade (comportamento esperado; resposta 409).
+- Build Docker do backend/frontend √© mais lento na primeira execu√ß√£o (download Maven/npm).
 
 ## Uso de IA
 
-Ferramenta: **Cursor (Composer / agente de cÛdigo)**.
+Ferramenta: **Cursor (Composer / agente de c√≥digo)**.
 
-| Parte | Uso de IA | Revis„o manual |
+| Parte | Uso de IA | Revis√£o manual |
 |-------|-----------|----------------|
 | Plano (`docs/plano-implementacao.html`) | Rascunho a partir do PDF | Ajuste de escopo, SQL Server ? Docker, Liquibase |
-| Docker Compose / Liquibase / entities | GeraÁ„o assistida | ValidaÁ„o JDBC, checksums, mapeamento `datetime2` ◊ `LocalDateTime` |
-| Regras de matrÌcula / lock | Proposta + implementaÁ„o | ConferÍncia do fluxo PENDENTE?CONFIRMAR e unique |
-| API (DTOs, controllers, errors, Swagger) | GeraÁ„o assistida | Smoke test HTTP e contratos de status |
-| Testes domÌnio + MockMvc | GeraÁ„o assistida | ExecuÁ„o `mvn test`, rename `*IT` ? `*ApiTest` |
+| Docker Compose / Liquibase / entities | Gera√ß√£o assistida | Valida√ß√£o JDBC, checksums, mapeamento `datetime2` √ó `LocalDateTime` |
+| Regras de matr√≠cula / lock | Proposta + implementa√ß√£o | Confer√™ncia do fluxo PENDENTE?CONFIRMAR e unique |
+| API (DTOs, controllers, errors, Swagger) | Gera√ß√£o assistida | Smoke test HTTP e contratos de status |
+| Testes dom√≠nio + MockMvc | Gera√ß√£o assistida | Execu√ß√£o `mvn test`, rename `*IT` ? `*ApiTest` |
 | Frontend Angular | Scaffold + telas | Build `ng build`, proxy/nginx |
-| README | RedaÁ„o assistida | Checagem contra checklist do PDF |
+| README | Reda√ß√£o assistida | Checagem contra checklist do PDF |
 
-### Trechos mais crÌticos (explicar na entrevista)
+### Trechos mais cr√≠ticos (explicar na entrevista)
 
 1. `Turma.consumirVaga` / `liberarVaga`
 2. `Matricula.criarPendente` / `confirmar` / `cancelar`
-3. `MatriculaService.confirmar` (lock pessimista + relÍ)
+3. `MatriculaService.confirmar` (lock pessimista + rel√™)
 4. `001-create-schema.xml` (unique + checks de status/vagas)
 5. `ApiExceptionHandler` (contrato de erro)
 
-## Estrutura do repositÛrio
+## Estrutura do reposit√≥rio
 
 ```
 desafio/
 ??? backend/                 # Spring Boot
 ??? frontend/                # Angular 19
-??? docker/sqlserver/        # script de criaÁ„o do database
-??? bin/db-up.sh             # sobe sÛ o SQL Server
+??? docker/sqlserver/        # script de cria√ß√£o do database
+??? bin/db-up.sh             # sobe s√≥ o SQL Server
 ??? bin/stack-up.sh          # sobe stack completa
 ??? docker-compose.yml
 ??? docs/                    # plano e guias auxiliares
 ??? DESAFI_2.pdf
 ```
 
-## Comandos ˙teis
+## Comandos √∫teis
 
 ```bash
 docker compose --env-file .env ps

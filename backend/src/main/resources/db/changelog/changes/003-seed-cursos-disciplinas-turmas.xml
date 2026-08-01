@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="003-seed-cursos" author="desafio-matriculas" context="seed">
+    <comment>5 cursos da area de tecnologia</comment>
+    <loadData
+      tableName="curso"
+      file="db/changelog/data/cursos-seed.csv"
+      separator=","
+      encoding="UTF-8">
+      <column name="codigo" type="STRING"/>
+      <column name="nome" type="STRING"/>
+      <column name="carga_horaria" type="NUMERIC"/>
+      <column name="ativo" type="BOOLEAN"/>
+    </loadData>
+  </changeSet>
+
+  <changeSet id="003-seed-disciplinas" author="desafio-matriculas" context="seed">
+    <comment>5 disciplinas por curso (25 no total)</comment>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CC')"/>
+      <column name="codigo" value="CC-ALG"/>
+      <column name="nome" value="Algoritmos e Estruturas de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CC')"/>
+      <column name="codigo" value="CC-BD"/>
+      <column name="nome" value="Banco de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CC')"/>
+      <column name="codigo" value="CC-POO"/>
+      <column name="nome" value="Programacao Orientada a Objetos"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CC')"/>
+      <column name="codigo" value="CC-WEB"/>
+      <column name="nome" value="Desenvolvimento Web"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CC')"/>
+      <column name="codigo" value="CC-SO"/>
+      <column name="nome" value="Sistemas Operacionais"/>
+      <column name="carga_horaria" valueNumeric="60"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ES')"/>
+      <column name="codigo" value="ES-ALG"/>
+      <column name="nome" value="Algoritmos e Estruturas de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ES')"/>
+      <column name="codigo" value="ES-BD"/>
+      <column name="nome" value="Banco de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ES')"/>
+      <column name="codigo" value="ES-POO"/>
+      <column name="nome" value="Programacao Orientada a Objetos"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ES')"/>
+      <column name="codigo" value="ES-WEB"/>
+      <column name="nome" value="Desenvolvimento Web"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ES')"/>
+      <column name="codigo" value="ES-SO"/>
+      <column name="nome" value="Sistemas Operacionais"/>
+      <column name="carga_horaria" valueNumeric="60"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'SI')"/>
+      <column name="codigo" value="SI-ALG"/>
+      <column name="nome" value="Algoritmos e Estruturas de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'SI')"/>
+      <column name="codigo" value="SI-BD"/>
+      <column name="nome" value="Banco de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'SI')"/>
+      <column name="codigo" value="SI-POO"/>
+      <column name="nome" value="Programacao Orientada a Objetos"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'SI')"/>
+      <column name="codigo" value="SI-WEB"/>
+      <column name="nome" value="Desenvolvimento Web"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'SI')"/>
+      <column name="codigo" value="SI-SO"/>
+      <column name="nome" value="Sistemas Operacionais"/>
+      <column name="carga_horaria" valueNumeric="60"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ADS')"/>
+      <column name="codigo" value="ADS-ALG"/>
+      <column name="nome" value="Algoritmos e Estruturas de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ADS')"/>
+      <column name="codigo" value="ADS-BD"/>
+      <column name="nome" value="Banco de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ADS')"/>
+      <column name="codigo" value="ADS-POO"/>
+      <column name="nome" value="Programacao Orientada a Objetos"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ADS')"/>
+      <column name="codigo" value="ADS-WEB"/>
+      <column name="nome" value="Desenvolvimento Web"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'ADS')"/>
+      <column name="codigo" value="ADS-SO"/>
+      <column name="nome" value="Sistemas Operacionais"/>
+      <column name="carga_horaria" valueNumeric="60"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CD')"/>
+      <column name="codigo" value="CD-ALG"/>
+      <column name="nome" value="Algoritmos e Estruturas de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CD')"/>
+      <column name="codigo" value="CD-BD"/>
+      <column name="nome" value="Banco de Dados"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CD')"/>
+      <column name="codigo" value="CD-POO"/>
+      <column name="nome" value="Programacao Orientada a Objetos"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CD')"/>
+      <column name="codigo" value="CD-WEB"/>
+      <column name="nome" value="Desenvolvimento Web"/>
+      <column name="carga_horaria" valueNumeric="80"/>
+    </insert>
+    <insert tableName="disciplina">
+      <column name="curso_id" valueComputed="(SELECT id FROM curso WHERE codigo = 'CD')"/>
+      <column name="codigo" value="CD-SO"/>
+      <column name="nome" value="Sistemas Operacionais"/>
+      <column name="carga_horaria" valueNumeric="60"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="003-seed-turmas" author="desafio-matriculas" context="seed">
+    <comment>2 turmas por curso (na primeira disciplina de cada curso)</comment>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CC-ALG')"/>
+      <column name="codigo" value="T1"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="40"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CC-ALG')"/>
+      <column name="codigo" value="T2"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="30"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ES-ALG')"/>
+      <column name="codigo" value="T1"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="40"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ES-ALG')"/>
+      <column name="codigo" value="T2"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="30"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'SI-ALG')"/>
+      <column name="codigo" value="T1"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="40"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'SI-ALG')"/>
+      <column name="codigo" value="T2"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="30"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ADS-ALG')"/>
+      <column name="codigo" value="T1"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="40"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'ADS-ALG')"/>
+      <column name="codigo" value="T2"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="30"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CD-ALG')"/>
+      <column name="codigo" value="T1"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="40"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+    <insert tableName="turma">
+      <column name="disciplina_id" valueComputed="(SELECT id FROM disciplina WHERE codigo = 'CD-ALG')"/>
+      <column name="codigo" value="T2"/>
+      <column name="periodo" value="2026.1"/>
+      <column name="vagas_totais" valueNumeric="30"/>
+      <column name="vagas_ocupadas" valueNumeric="0"/>
+      <column name="status" value="ABERTA"/>
+      <column name="version" valueNumeric="0"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>
