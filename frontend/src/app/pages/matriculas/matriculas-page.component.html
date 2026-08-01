@@ -1,7 +1,7 @@
 <section class="panel">
   <header>
     <h2>Matriculas</h2>
-    <p>Fluxo PENDENTE ? CONFIRMADA / CANCELADA, com controle de vagas.</p>
+    <p>Fluxo PENDENTE -&gt; CONFIRMADA / CANCELADA, com controle de vagas.</p>
   </header>
 
   <form class="form-grid" [formGroup]="form" (ngSubmit)="matricular()">
@@ -17,7 +17,7 @@
       <select formControlName="turmaId">
         <option [ngValue]="0" disabled>Selecione</option>
         <option *ngFor="let t of turmas" [ngValue]="t.id">
-          {{ t.disciplinaCodigo }} · {{ t.codigo }} ({{ t.periodo }}) ? {{ t.status }} ? vagas {{ t.vagasDisponiveis }}
+          {{ t.disciplinaCodigo }} | {{ t.codigo }} ({{ t.periodo }}) - {{ t.status }} - vagas {{ t.vagasDisponiveis }}
         </option>
       </select>
     </label>
@@ -30,15 +30,15 @@
     <label>
       Filtrar por aluno
       <select formControlName="alunoId">
-        <option [ngValue]="0">?</option>
+        <option [ngValue]="0">Todos</option>
         <option *ngFor="let a of alunos" [ngValue]="a.id">{{ a.ra }} - {{ a.nome }}</option>
       </select>
     </label>
     <label>
       Filtrar por turma
       <select formControlName="turmaId">
-        <option [ngValue]="0">?</option>
-        <option *ngFor="let t of turmas" [ngValue]="t.id">{{ t.disciplinaCodigo }} · {{ t.codigo }} - {{ t.periodo }}</option>
+        <option [ngValue]="0">Todas</option>
+        <option *ngFor="let t of turmas" [ngValue]="t.id">{{ t.disciplinaCodigo }} | {{ t.codigo }} - {{ t.periodo }}</option>
       </select>
     </label>
     <div class="actions">
@@ -60,7 +60,7 @@
       <tbody>
         <tr *ngFor="let m of matriculas">
           <td>{{ m.id }}</td>
-          <td>{{ m.alunoRa }} ? {{ m.alunoNome }}</td>
+          <td>{{ m.alunoRa }} - {{ m.alunoNome }}</td>
           <td>{{ m.turmaCodigo }} ({{ m.turmaPeriodo }})</td>
           <td>
             <span
